@@ -1,1 +1,4 @@
-export * from "./sample.entity";
+export * from "./account.entity";
+export * from "./role.entity";
+export * from "./permission.entity";
+export * from "./role-permission.entity";

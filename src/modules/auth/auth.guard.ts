@@ -1,0 +1,61 @@
+import { AccountRepository } from "@db/repositories";
+import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
+import { Reflector } from "@nestjs/core";
+import { Request } from "express";
+import * as jwt from "jsonwebtoken";
+import { ClsService } from "nestjs-cls";
+import { GenshinBanpickCls } from "@utils";
+import { Env } from "@utils/env";
+import { SKIP_AUTH_KEY } from "@utils/decorators";
+import { InvalidCredentialsError } from "./errors";
+
+@Injectable()
+export class AuthGuard implements CanActivate {
+	constructor(
+		private readonly accountRepo: AccountRepository,
+		private readonly cls: ClsService<GenshinBanpickCls>,
+		private readonly reflector: Reflector,
+	) {}
+
+	async canActivate(context: ExecutionContext): Promise<boolean> {
+		const req = context.switchToHttp().getRequest<Request>();
+
+		const skipAuth = this.reflector.getAllAndOverride<boolean>(SKIP_AUTH_KEY, [
+			context.getHandler(),
+			context.getClass(),
+		]);
+
+		if (skipAuth) {
+			return true;
+		}
+
+		const token = this.getTokenFromRequest(req);
+		if (!token) {
+			throw new InvalidCredentialsError();
+		}
+
+		try {
+			const payload = jwt.verify(token, Env.JWT_AT_SECRET) as jwt.JwtPayload;
+			const accountId = payload?.sub as string | undefined;
+			if (!accountId) {
+				throw new InvalidCredentialsError();
+			}
+
+			const account = await this.accountRepo.findOne({
+				where: { id: accountId },
+			});
+			if (!account) {
+				throw new InvalidCredentialsError();
+			}
+
+			this.cls.set("account", account);
+			return true;
+		} catch {
+			throw new InvalidCredentialsError();
+		}
+	}
+
+	private getTokenFromRequest(req: Request): string | undefined {
+		return req.headers["authorization"]?.replace("Bearer ", "");
+	}
+}

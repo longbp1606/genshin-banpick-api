@@ -15,7 +15,9 @@ Use TS path aliases from `tsconfig.json`:
 ## Response + error conventions
 
 - Always return standardized responses via `BaseApiResponse.success(...)` or `BaseApiResponse.error(...)` from `@utils`.
+- When returning object DTOs from services, prefer `builder-pattern` (e.g., `Builder(TokenResponse)...build()`).
 - Throw/return custom errors by extending `ApiError` (`@errors/api-error.ts`).
+- Do not throw `ApiError` directly in services. Define module-specific errors under `src/modules/<feature>/errors` and throw those instead.
 - Validation errors must use `ApiValidationError` (built from `class-validator` errors) so the global filter can format them.
 - The global exception filter is `MyExceptionFilter` in `@utils`. It handles `ApiError` and `HttpException` and returns `BaseApiResponse`.
 - Error codes are in `@utils/enums/error-code.ts` (`OK`, `UNKNOWN_ERROR`, `VALIDATION_ERROR`). Add new codes there as needed.
@@ -24,6 +26,8 @@ Use TS path aliases from `tsconfig.json`:
 
 - Define DTOs with `class-validator` and `@nestjs/swagger` decorators.
 - Validation is global in `main.ts` using `ValidationPipe` with a custom `exceptionFactory` that wraps errors in `ApiValidationError`.
+- Request/response DTO naming: `create-example.request.ts` (`CreateExampleRequest`) and `example.response.ts` (`ExampleResponse`).
+- Response DTOs typically implement `fromEntity(...)` and `fromEntities(...)` helpers.
 
 ## Module structure conventions
 
@@ -37,6 +41,8 @@ Use TS path aliases from `tsconfig.json`:
   - `datasource.ts` TypeORM DataSource
   - `db.module.ts` registers TypeORM and transactional datasource
   - `entities/` and `migrations/`
+  - `repositories/` for injectable repositories to use in services
+  - When adding a new repository, register it in `db.module.ts` (`providers` + `exports`)
 
 ## Swagger
 

@@ -86,3 +86,24 @@ export function SwaggerBaseApiResponse<T extends Type<any>>(
 		}),
 	);
 }
+
+export function SwaggerBaseApiMessageResponse(): MethodDecorator {
+	return applyDecorators(
+		ApiExtraModels(BaseApiResponse),
+		ApiOkResponse({
+			schema: {
+				allOf: [
+					{ $ref: getSchemaPath(BaseApiResponse) },
+					{
+						properties: {
+							data: {
+								type: "object",
+								properties: {},
+							},
+						},
+					},
+				],
+			},
+		}),
+	);
+}
