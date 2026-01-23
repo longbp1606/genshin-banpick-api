@@ -28,6 +28,7 @@ Use TS path aliases from `tsconfig.json`:
 - Validation is global in `main.ts` using `ValidationPipe` with a custom `exceptionFactory` that wraps errors in `ApiValidationError`.
 - Request/response DTO naming: `create-example.request.ts` (`CreateExampleRequest`) and `example.response.ts` (`ExampleResponse`).
 - Response DTOs typically implement `fromEntity(...)` and `fromEntities(...)` helpers.
+- Do not include audit fields like `createdById`/`updatedById` in request DTOs; populate them in services via `ClsService` using the current account.
 
 ## Module structure conventions
 
@@ -48,6 +49,12 @@ Use TS path aliases from `tsconfig.json`:
 
 - Use `SwaggerBaseApiResponse(...)` from `@utils` for controller responses.
 - `BaseApiResponse` defines swagger schema for `data` and `pagination`.
+
+## Authorization + permissions
+
+- Use `@RequirePermission(...)` from `@utils/decorators` on protected endpoints.
+- Allowed values are from `PermissionCode` (keys of `PERMISSIONS_MAP` in `@utils/constants`).
+- If you add a new permission, update `PERMISSIONS_MAP` accordingly.
 
 ## Environment config
 

@@ -38,7 +38,7 @@ export class AuthController {
 	@SwaggerBaseApiResponse(ProfileResponse)
 	@ApiBearerAuth()
 	async getProfile() {
-		const account = await this.authService.getCurrentAccount();
-		return BaseApiResponse.success(ProfileResponse.fromEntity(account));
+		const profile = await this.authService.getCurrentAccount();
+		return BaseApiResponse.success(profile);
 	}
 }

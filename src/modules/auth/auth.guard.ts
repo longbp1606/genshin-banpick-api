@@ -6,8 +6,10 @@ import * as jwt from "jsonwebtoken";
 import { ClsService } from "nestjs-cls";
 import { GenshinBanpickCls } from "@utils";
 import { Env } from "@utils/env";
-import { SKIP_AUTH_KEY } from "@utils/decorators";
+import { REQUIRE_PERMISSION_KEY, SKIP_AUTH_KEY } from "@utils/decorators";
 import { InvalidCredentialsError } from "./errors";
+import { AccountRole } from "@utils/enums";
+import { ProfileResponse } from "./dto";
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -43,12 +45,36 @@ export class AuthGuard implements CanActivate {
 
 			const account = await this.accountRepo.findOne({
 				where: { id: accountId },
+				relations: [
+					"staffRole",
+					"staffRole.permissions",
+					"staffRole.permissions.permission",
+				],
 			});
 			if (!account) {
 				throw new InvalidCredentialsError();
 			}
 
-			this.cls.set("account", account);
+			const requiredPermission = this.reflector.getAllAndOverride<string>(
+				REQUIRE_PERMISSION_KEY,
+				[context.getHandler()],
+			);
+
+			if (requiredPermission) {
+				if (account.role == AccountRole.ADMIN) {
+					this.cls.set("profile", ProfileResponse.fromEntity(account));
+					return true;
+				}
+
+				const permissions =
+					account.staffRole?.permissions?.map((p) => p.permission?.code) ?? [];
+				const hasPermission = permissions.includes(requiredPermission);
+				if (!hasPermission) {
+					throw new InvalidCredentialsError();
+				}
+			}
+
+			this.cls.set("profile", ProfileResponse.fromEntity(account));
 			return true;
 		} catch {
 			throw new InvalidCredentialsError();

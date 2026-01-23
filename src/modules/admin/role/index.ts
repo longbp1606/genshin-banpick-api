@@ -1,2 +1,2 @@
-export * from "./role.module";
-export * from "./role.service";
+export * from "./staff-role.module";
+export * from "./staff-role.service";

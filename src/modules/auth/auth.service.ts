@@ -1,5 +1,5 @@
 import { AccountRepository } from "@db/repositories";
-import { Injectable } from "@nestjs/common";
+import { Injectable, OnModuleInit } from "@nestjs/common";
 import { Builder } from "builder-pattern";
 import * as bcrypt from "bcryptjs";
 import * as jwt from "jsonwebtoken";
@@ -8,13 +8,36 @@ import { BasicLoginRequest, RegisterRequest, TokenResponse } from "./dto";
 import { AccountAlreadyExistsError, InvalidCredentialsError } from "./errors";
 import { ClsService } from "nestjs-cls";
 import { GenshinBanpickCls } from "@utils";
+import { AccountRole } from "@utils/enums";
 
 @Injectable()
-export class AuthService {
+export class AuthService implements OnModuleInit {
 	constructor(
 		private readonly accountRepo: AccountRepository,
 		private readonly cls: ClsService<GenshinBanpickCls>,
 	) {}
+
+	private async initAdminAccount() {
+		const admin = await this.accountRepo.findOne({
+			where: { email: Env.ADMIN_EMAIL },
+		});
+
+		if (!admin) {
+			const hashedPassword = await bcrypt.hash(Env.ADMIN_PASSWORD, 10);
+			const account = this.accountRepo.create({
+				email: Env.ADMIN_EMAIL,
+				displayName: "Administrator",
+				password: hashedPassword,
+				role: AccountRole.ADMIN,
+			});
+
+			await this.accountRepo.save(account);
+		}
+	}
+
+	async onModuleInit() {
+		await this.initAdminAccount();
+	}
 
 	async register(dto: RegisterRequest) {
 		const existing = await this.accountRepo.findOne({
@@ -63,7 +86,7 @@ export class AuthService {
 		);
 
 		const accessToken = jwt.sign(
-			{ sub: account.id, email: account.email, isAdmin: account.isAdmin },
+			{ sub: account.id, email: account.email, role: account.role },
 			Env.JWT_AT_SECRET,
 			{
 				expiresIn: Env.JWT_AT_EXPIRATION || undefined,
@@ -74,6 +97,6 @@ export class AuthService {
 	}
 
 	async getCurrentAccount() {
-		return this.cls.get("account");
+		return this.cls.get("profile");
 	}
 }

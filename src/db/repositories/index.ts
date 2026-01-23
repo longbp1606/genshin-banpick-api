@@ -1,4 +1,4 @@
 export * from "./account.repository";
-export * from "./role.repository";
+export * from "./staff-role.repository";
 export * from "./permission.repository";
-export * from "./role-permission.repository";
+export * from "./staff-role-permission.repository";

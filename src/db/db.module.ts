@@ -5,14 +5,14 @@ import { addTransactionalDataSource } from "typeorm-transactional";
 import {
 	AccountRepository,
 	PermissionRepository,
-	RolePermissionRepository,
-	RoleRepository,
+	StaffRolePermissionRepository,
+	StaffRoleRepository,
 } from "./repositories";
 
 const repositories = [
 	PermissionRepository,
-	RolePermissionRepository,
-	RoleRepository,
+	StaffRolePermissionRepository,
+	StaffRoleRepository,
 	AccountRepository,
 ];
 

@@ -9,7 +9,7 @@ import {
 	IsString,
 } from "class-validator";
 
-export class UpdateRoleRequest {
+export class UpdateStaffRoleRequest {
 	@ApiProperty({ required: false })
 	@IsOptional()
 	@IsString()
@@ -27,8 +27,4 @@ export class UpdateRoleRequest {
 	@IsOptional()
 	@IsBoolean()
 	isActive?: boolean;
-
-	@ApiProperty()
-	@IsInt()
-	updatedById: number;
 }

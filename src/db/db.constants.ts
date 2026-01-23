@@ -1,9 +1,9 @@
 export const TableNames = {
 	Sample: "sample",
 	Account: "account",
-	Role: "role",
+	StaffRole: "staff_role",
 	Permission: "permission",
-	RolePermission: "role_permission",
+	StaffRolePermission: "staff_role_permission",
 };
 
 export const ColumnNames = {
@@ -26,11 +26,11 @@ export const ColumnNames = {
 		displayName: "display_name",
 		password: "password",
 		lastLoginAt: "last_login_at",
-		isAdmin: "is_admin",
+		role: "role",
 	},
-	Role: {
-		id: "role_id",
-		name: "role_name",
+	StaffRole: {
+		id: "staff_role_id",
+		name: "staff_role_name",
 	},
 	Permission: {
 		id: "permission_id",
@@ -38,8 +38,8 @@ export const ColumnNames = {
 		code: "permission_code",
 		deprecated: "permission_deprecated",
 	},
-	RolePermission: {
-		id: "role_permission_id",
+	StaffRolePermission: {
+		id: "staff_role_permission_id",
 	},
 };
 

@@ -1,6 +1,6 @@
-import { AccountEntity } from "@db/entities";
+import { ProfileResponse } from "@modules/auth/dto";
 import { ClsStore } from "nestjs-cls";
 
 export interface GenshinBanpickCls extends ClsStore {
-	account: AccountEntity;
+	profile: ProfileResponse;
 }

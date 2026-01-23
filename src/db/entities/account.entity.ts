@@ -7,7 +7,8 @@ import {
 	ManyToOne,
 	PrimaryGeneratedColumn,
 } from "typeorm";
-import { RoleEntity } from "./role.entity";
+import { AccountRole } from "@utils/enums";
+import { StaffRoleEntity } from "./staff-role.entity";
 
 @Entity(TableNames.Account)
 export class AccountEntity {
@@ -32,16 +33,20 @@ export class AccountEntity {
 	@Column({ name: ColumnNames.Account.lastLoginAt, nullable: true })
 	lastLoginAt: Date;
 
-	@Column({ name: ColumnNames.Account.isAdmin, default: false })
-	isAdmin: boolean;
+	@Column({
+		name: ColumnNames.Account.role,
+		type: "int",
+		default: AccountRole.USER,
+	})
+	role: AccountRole;
 
-	@Column({ name: ColumnNames.Role.id, nullable: true })
-	roleId: number;
+	@Column({ name: ColumnNames.StaffRole.id, nullable: true })
+	staffRoleId: number;
 
-	@ManyToOne(() => RoleEntity, {
+	@ManyToOne(() => StaffRoleEntity, {
 		nullable: true,
 		createForeignKeyConstraints: false,
 	})
-	@JoinColumn({ name: ColumnNames.Role.id })
-	role: RoleEntity;
+	@JoinColumn({ name: ColumnNames.StaffRole.id })
+	staffRole: StaffRoleEntity;
 }

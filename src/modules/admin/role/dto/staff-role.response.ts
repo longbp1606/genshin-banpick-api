@@ -1,9 +1,9 @@
-import { PermissionEntity, RoleEntity } from "@db/entities";
+import { StaffRoleEntity } from "@db/entities";
 import { ApiProperty } from "@nestjs/swagger";
 import { Builder } from "builder-pattern";
 import { PermissionResponse } from "@modules/admin/permission/dto";
 
-export class RoleResponse {
+export class StaffRoleResponse {
 	@ApiProperty()
 	id: number;
 
@@ -17,19 +17,20 @@ export class RoleResponse {
 	createdAt: Date;
 
 	@ApiProperty()
-	createdById: number;
+	createdById: string;
 
 	@ApiProperty()
 	updatedAt: Date;
 
 	@ApiProperty()
-	updatedById: number;
+	updatedById: string;
 
 	@ApiProperty({ type: [PermissionResponse] })
 	permissions: PermissionResponse[];
 
-	static fromEntity(entity: RoleEntity, permissions: PermissionEntity[]) {
-		return Builder(RoleResponse)
+	static fromEntity(entity: StaffRoleEntity) {
+		const permissions = entity.permissions?.map((rp) => rp.permission) ?? [];
+		return Builder(StaffRoleResponse)
 			.id(entity.id)
 			.name(entity.name)
 			.isActive(entity.isActive)
@@ -41,11 +42,7 @@ export class RoleResponse {
 			.build();
 	}
 
-	static fromEntities(
-		roles: { role: RoleEntity; permissions: PermissionEntity[] }[],
-	) {
-		return roles.map(({ role, permissions }) =>
-			this.fromEntity(role, permissions),
-		);
+	static fromEntities(roles: StaffRoleEntity[]) {
+		return roles.map((role) => this.fromEntity(role));
 	}
 }

@@ -13,6 +13,8 @@ export const Env = {
 	ENABLE_SWAGGER: process.env.ENABLE_SWAGGER === "true",
 	JWT_AT_SECRET: process.env.JWT_AT_SECRET || "",
 	JWT_AT_EXPIRATION: Number(process.env.JWT_AT_EXPIRATION || "0"),
+	ADMIN_EMAIL: process.env.ADMIN_EMAIL || "",
+	ADMIN_PASSWORD: process.env.ADMIN_PASSWORD || "",
 } as const;
 
 console.log(Env);

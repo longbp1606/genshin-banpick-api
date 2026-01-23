@@ -10,7 +10,7 @@ import {
 	IsString,
 } from "class-validator";
 
-export class CreateRoleRequest {
+export class CreateStaffRoleRequest {
 	@ApiProperty()
 	@IsString()
 	@IsNotEmpty()
@@ -27,13 +27,4 @@ export class CreateRoleRequest {
 	@IsOptional()
 	@IsBoolean()
 	isActive?: boolean;
-
-	@ApiProperty()
-	@IsInt()
-	createdById: number;
-
-	@ApiProperty({ required: false })
-	@IsOptional()
-	@IsInt()
-	updatedById?: number;
 }
