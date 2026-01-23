@@ -21,6 +21,7 @@ Use TS path aliases from `tsconfig.json`:
 - Validation errors must use `ApiValidationError` (built from `class-validator` errors) so the global filter can format them.
 - The global exception filter is `MyExceptionFilter` in `@utils`. It handles `ApiError` and `HttpException` and returns `BaseApiResponse`.
 - Error codes are in `@utils/enums/error-code.ts` (`OK`, `UNKNOWN_ERROR`, `VALIDATION_ERROR`). Add new codes there as needed.
+- For endpoints that only return a success message, use `SwaggerBaseApiMessageResponse()`.
 
 ## DTOs + validation
 
@@ -48,17 +49,20 @@ Use TS path aliases from `tsconfig.json`:
 ## Swagger
 
 - Use `SwaggerBaseApiResponse(...)` from `@utils` for controller responses.
+- Use `SwaggerBaseApiMessageResponse()` for endpoints with no data payload.
 - `BaseApiResponse` defines swagger schema for `data` and `pagination`.
 
 ## Authorization + permissions
 
+- Auth is enforced globally via `AuthGuard` (registered in `AppModule`). Use `@SkipAuth()` to bypass.
 - Use `@RequirePermission(...)` from `@utils/decorators` on protected endpoints.
 - Allowed values are from `PermissionCode` (keys of `PERMISSIONS_MAP` in `@utils/constants`).
 - If you add a new permission, update `PERMISSIONS_MAP` accordingly.
+- For authenticated routes, include `@ApiBearerAuth()`.
 
 ## Environment config
 
-- `Env` in `src/utils/env.ts` is the single source for env vars (DB, port, swagger flag). Update it when adding new variables.
+- `Env` in `src/utils/env.ts` is the single source for env vars (DB, port, swagger flag, JWT config, admin bootstrap). Update it when adding new variables.
 
 ## Style conventions
 
