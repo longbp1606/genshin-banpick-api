@@ -1,9 +1,16 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsEmail, IsString, IsStrongPassword } from "class-validator";
+import {
+	IsEmail,
+	IsNotEmpty,
+	IsString,
+	IsStrongPassword,
+	MaxLength,
+} from "class-validator";
 
 export class RegisterRequest {
 	@ApiProperty({ example: "123456789" })
 	@IsString()
+	@IsNotEmpty()
 	ingameUuid: string;
 
 	@ApiProperty({ example: "user@example.com" })
@@ -12,6 +19,7 @@ export class RegisterRequest {
 
 	@ApiProperty({ example: "User123" })
 	@IsString()
+	@IsNotEmpty()
 	displayName: string;
 
 	@ApiProperty({ example: "P@ssw0rd!" })
@@ -22,5 +30,6 @@ export class RegisterRequest {
 		minNumbers: 1,
 		minSymbols: 1,
 	})
+	@MaxLength(30)
 	password: string;
 }
