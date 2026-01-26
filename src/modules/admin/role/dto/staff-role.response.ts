@@ -2,6 +2,7 @@ import { StaffRoleEntity } from "@db/entities";
 import { ApiProperty } from "@nestjs/swagger";
 import { Builder } from "builder-pattern";
 import { PermissionResponse } from "@modules/admin/permission/dto";
+import { ProfileResponse } from "@modules/auth/dto";
 
 export class StaffRoleResponse {
 	@ApiProperty()
@@ -17,13 +18,13 @@ export class StaffRoleResponse {
 	createdAt: Date;
 
 	@ApiProperty()
-	createdById: string;
+	createdBy: ProfileResponse;
 
 	@ApiProperty()
 	updatedAt: Date;
 
 	@ApiProperty()
-	updatedById: string;
+	updatedBy: ProfileResponse;
 
 	@ApiProperty({ type: [PermissionResponse] })
 	permissions: PermissionResponse[];
@@ -35,9 +36,17 @@ export class StaffRoleResponse {
 			.name(entity.name)
 			.isActive(entity.isActive)
 			.createdAt(entity.createdAt)
-			.createdById(entity.createdById)
+			.createdBy(
+				entity.createdBy
+					? ProfileResponse.fromEntity(entity.createdBy)
+					: undefined,
+			)
 			.updatedAt(entity.updatedAt)
-			.updatedById(entity.updatedById)
+			.updatedBy(
+				entity.updatedBy
+					? ProfileResponse.fromEntity(entity.updatedBy)
+					: undefined,
+			)
 			.permissions(PermissionResponse.fromEntities(permissions))
 			.build();
 	}

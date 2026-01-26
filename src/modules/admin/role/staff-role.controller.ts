@@ -30,6 +30,14 @@ export class StaffRoleController {
 		return BaseApiResponse.success(StaffRoleResponse.fromEntities(roles));
 	}
 
+	@Get(":id")
+	@RequirePermission("admin.staff-role.detail")
+	@SwaggerBaseApiResponse(StaffRoleResponse)
+	async getStaffRole(@Param("id", ParseIntPipe) id: number) {
+		const role = await this.roleService.getStaffRole(id);
+		return BaseApiResponse.success(StaffRoleResponse.fromEntity(role));
+	}
+
 	@Post()
 	@RequirePermission("admin.staff-role.create")
 	@SwaggerBaseApiResponse(StaffRoleResponse)

@@ -27,6 +27,7 @@ export const ColumnNames = {
 		password: "password",
 		lastLoginAt: "last_login_at",
 		role: "role",
+		isActive: "is_active",
 	},
 	StaffRole: {
 		id: "staff_role_id",

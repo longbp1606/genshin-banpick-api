@@ -66,8 +66,12 @@ export class AuthGuard implements CanActivate {
 					return true;
 				}
 
+				if (!account.staffRole || !account.staffRole.isActive) {
+					throw new InvalidCredentialsError();
+				}
+
 				const permissions =
-					account.staffRole?.permissions?.map((p) => p.permission?.code) ?? [];
+					account.staffRole.permissions?.map((p) => p.permission?.code) ?? [];
 				const hasPermission = permissions.includes(requiredPermission);
 				if (!hasPermission) {
 					throw new InvalidCredentialsError();

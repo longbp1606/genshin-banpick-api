@@ -1,5 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import {
+	ArrayNotEmpty,
 	ArrayUnique,
 	IsArray,
 	IsBoolean,
@@ -19,6 +20,7 @@ export class UpdateStaffRoleRequest {
 	@ApiProperty({ required: false, type: [Number] })
 	@IsOptional()
 	@IsArray()
+	@ArrayNotEmpty()
 	@ArrayUnique()
 	@IsInt({ each: true })
 	permissionIds?: number[];

@@ -19,8 +19,31 @@ export class StaffRoleService {
 	async listRoles() {
 		return this.roleRepo.find({
 			order: { id: "ASC" },
-			relations: ["permissions", "permissions.permission"],
+			relations: {
+				permissions: {
+					permission: true,
+				},
+				createdBy: true,
+				updatedBy: true,
+			},
 		});
+	}
+
+	async getStaffRole(id: number) {
+		const role = await this.roleRepo.findOne({
+			where: { id },
+			relations: {
+				permissions: {
+					permission: true,
+				},
+				createdBy: true,
+				updatedBy: true,
+			},
+		});
+		if (!role) {
+			throw new RoleNotFoundError();
+		}
+		return role;
 	}
 
 	async createRole(dto: CreateStaffRoleRequest) {
@@ -48,7 +71,13 @@ export class StaffRoleService {
 
 		const savedRoleWithPermissions = await this.roleRepo.findOne({
 			where: { id: savedRole.id },
-			relations: ["permissions", "permissions.permission"],
+			relations: {
+				permissions: {
+					permission: true,
+				},
+				createdBy: true,
+				updatedBy: true,
+			},
 		});
 
 		return savedRoleWithPermissions ?? savedRole;
@@ -86,7 +115,13 @@ export class StaffRoleService {
 
 		const savedRoleWithPermissions = await this.roleRepo.findOne({
 			where: { id: savedRole.id },
-			relations: ["permissions", "permissions.permission"],
+			relations: {
+				permissions: {
+					permission: true,
+				},
+				createdBy: true,
+				updatedBy: true,
+			},
 		});
 
 		return savedRoleWithPermissions ?? savedRole;
@@ -124,7 +159,13 @@ export class StaffRoleService {
 
 		const savedRoleWithPermissions = await this.roleRepo.findOne({
 			where: { id: savedRole.id },
-			relations: ["permissions", "permissions.permission"],
+			relations: {
+				permissions: {
+					permission: true,
+				},
+				createdBy: true,
+				updatedBy: true,
+			},
 		});
 
 		return savedRoleWithPermissions ?? savedRole;
