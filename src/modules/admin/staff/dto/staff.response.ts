@@ -2,6 +2,7 @@ import { AccountEntity } from "@db/entities";
 import { ApiProperty } from "@nestjs/swagger";
 import { Builder } from "builder-pattern";
 import { AccountRole } from "@utils/enums";
+import { ProfileResponse } from "@modules/auth/dto";
 
 export class StaffResponse {
 	@ApiProperty()
@@ -29,7 +30,13 @@ export class StaffResponse {
 	createdAt: Date;
 
 	@ApiProperty({ required: false })
+	createdBy?: ProfileResponse;
+
+	@ApiProperty({ required: false })
 	lastLoginAt?: Date;
+
+	@ApiProperty()
+	isActive: boolean;
 
 	static fromEntity(entity: AccountEntity) {
 		return Builder(StaffResponse)
@@ -41,7 +48,13 @@ export class StaffResponse {
 			.staffRoleId(entity.staffRoleId)
 			.staffRoleName(entity.staffRole?.name)
 			.createdAt(entity.createdAt)
+			.createdBy(
+				entity.createdBy
+					? ProfileResponse.fromEntity(entity.createdBy)
+					: undefined,
+			)
 			.lastLoginAt(entity.lastLoginAt)
+			.isActive(entity.isActive)
 			.build();
 	}
 

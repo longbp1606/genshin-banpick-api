@@ -14,7 +14,7 @@ import { BaseApiResponse, SwaggerBaseApiResponse } from "@utils";
 import { RequirePermission } from "@utils/decorators";
 import { CreateStaffRequest, StaffResponse, UpdateStaffRequest } from "./dto";
 
-@Controller("/admin/staff")
+@Controller("/admin/staffs")
 @ApiBearerAuth()
 export class StaffController {
 	constructor(private readonly staffService: StaffService) {}
@@ -54,10 +54,11 @@ export class StaffController {
 		return BaseApiResponse.success(StaffResponse.fromEntity(staff));
 	}
 
-	@Delete(":id")
-	@RequirePermission("admin.staff.delete")
-	async deleteStaff(@Param("id", ParseUUIDPipe) id: string) {
-		await this.staffService.deleteStaff(id);
-		return BaseApiResponse.success();
+	@Put(":id/toggle-active")
+	@RequirePermission("admin.staff.update")
+	@SwaggerBaseApiResponse(StaffResponse)
+	async toggleActive(@Param("id", ParseUUIDPipe) id: string) {
+		const staff = await this.staffService.toggleActive(id);
+		return BaseApiResponse.success(StaffResponse.fromEntity(staff));
 	}
 }

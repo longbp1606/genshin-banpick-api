@@ -57,7 +57,7 @@ export class StaffRoleController {
 		return BaseApiResponse.success(StaffRoleResponse.fromEntity(role));
 	}
 
-	@Post("/copy/:id")
+	@Post(":id/copy")
 	@RequirePermission("admin.staff-role.copy")
 	@SwaggerBaseApiResponse(StaffRoleResponse)
 	async copyRole(@Param("id", ParseIntPipe) id: number) {

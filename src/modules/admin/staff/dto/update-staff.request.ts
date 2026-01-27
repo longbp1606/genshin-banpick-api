@@ -1,5 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import {
+	IsBoolean,
 	IsEmail,
 	IsInt,
 	IsNotEmpty,
@@ -24,17 +25,6 @@ export class UpdateStaffRequest {
 	@IsString()
 	@IsNotEmpty()
 	displayName?: string;
-
-	@ApiProperty({ required: false })
-	@IsOptional()
-	@IsStrongPassword({
-		minLength: 6,
-		minLowercase: 1,
-		minUppercase: 1,
-		minNumbers: 1,
-		minSymbols: 1,
-	})
-	password?: string;
 
 	@ApiProperty({ required: false })
 	@IsOptional()
