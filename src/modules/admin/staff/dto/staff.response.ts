@@ -2,7 +2,7 @@ import { AccountEntity } from "@db/entities";
 import { ApiProperty } from "@nestjs/swagger";
 import { Builder } from "builder-pattern";
 import { AccountRole } from "@utils/enums";
-import { ProfileResponse } from "@modules/auth/dto";
+import { ProfileResponse } from "@modules/self/dto";
 
 export class StaffResponse {
 	@ApiProperty()

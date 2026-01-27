@@ -7,6 +7,7 @@ import { AuthGuard, AuthModule } from "@modules/auth";
 import { ClsModule } from "nestjs-cls";
 import { StaffModule } from "@modules/admin/staff";
 import { FilesModule } from "@modules/files";
+import { SelfModule } from "@modules/self";
 
 @Module({
 	imports: [
@@ -22,6 +23,7 @@ import { FilesModule } from "@modules/files";
 		AuthModule,
 		StaffModule,
 		FilesModule,
+		SelfModule,
 	],
 	controllers: [],
 	providers: [

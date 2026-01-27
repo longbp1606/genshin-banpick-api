@@ -96,8 +96,4 @@ export class AuthService implements OnModuleInit {
 
 		return Builder(TokenResponse).accessToken(accessToken).build();
 	}
-
-	async getCurrentAccount() {
-		return this.cls.get("profile");
-	}
 }
