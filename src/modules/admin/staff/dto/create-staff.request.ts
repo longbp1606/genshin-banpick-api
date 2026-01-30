@@ -6,6 +6,7 @@ import {
 	IsString,
 	IsStrongPassword,
 	IsInt,
+	IsUrl,
 } from "class-validator";
 
 export class CreateStaffRequest {
@@ -17,6 +18,11 @@ export class CreateStaffRequest {
 	@ApiProperty()
 	@IsEmail()
 	email: string;
+
+	@ApiProperty({ required: false })
+	@IsOptional()
+	@IsUrl()
+	avatar?: string;
 
 	@ApiProperty()
 	@IsString()

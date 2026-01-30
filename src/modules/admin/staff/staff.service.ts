@@ -7,6 +7,8 @@ import {
 	StaffRoleNotFoundError,
 } from "./errors";
 import { AccountRole } from "@utils/enums";
+import { ClsService } from "nestjs-cls";
+import { GenshinBanpickCls } from "@utils";
 import * as bcrypt from "bcryptjs";
 
 @Injectable()
@@ -14,12 +16,16 @@ export class StaffService {
 	constructor(
 		private readonly accountRepo: AccountRepository,
 		private readonly staffRoleRepo: StaffRoleRepository,
+		private readonly cls: ClsService<GenshinBanpickCls>,
 	) {}
 
 	async listStaff() {
 		return this.accountRepo.find({
 			where: { role: AccountRole.STAFF },
-			relations: ["staffRole"],
+			relations: {
+				staffRole: true,
+				createdBy: true,
+			},
 			order: { createdAt: "DESC" },
 		});
 	}
@@ -27,7 +33,10 @@ export class StaffService {
 	async getStaff(id: string) {
 		const staff = await this.accountRepo.findOne({
 			where: { id, role: AccountRole.STAFF },
-			relations: ["staffRole"],
+			relations: {
+				staffRole: true,
+				createdBy: true,
+			},
 		});
 		if (!staff) {
 			throw new StaffNotFoundError();
@@ -51,6 +60,7 @@ export class StaffService {
 		}
 
 		const hashedPassword = await bcrypt.hash(dto.password, 10);
+		const currentAccountId = this.cls.get("profile.id");
 
 		const staff = this.accountRepo.create({
 			ingameUuid: dto.ingameUuid,
@@ -59,13 +69,18 @@ export class StaffService {
 			password: hashedPassword,
 			role: AccountRole.STAFF,
 			staffRoleId: dto.staffRoleId,
+			createdById: currentAccountId,
+			avatar: dto.avatar,
 		});
 
 		const saved = await this.accountRepo.save(staff);
 
 		return this.accountRepo.findOne({
 			where: { id: saved.id },
-			relations: ["staffRole"],
+			relations: {
+				staffRole: true,
+				createdBy: true,
+			},
 		});
 	}
 
@@ -95,8 +110,8 @@ export class StaffService {
 			staff.ingameUuid = dto.ingameUuid;
 		}
 
-		if (dto.password !== undefined) {
-			staff.password = await bcrypt.hash(dto.password, 10);
+		if (dto.avatar !== undefined) {
+			staff.avatar = dto.avatar;
 		}
 
 		if (dto.staffRoleId !== undefined) {
@@ -113,11 +128,14 @@ export class StaffService {
 
 		return this.accountRepo.findOne({
 			where: { id: staff.id },
-			relations: ["staffRole"],
+			relations: {
+				staffRole: true,
+				createdBy: true,
+			},
 		});
 	}
 
-	async deleteStaff(id: string) {
+	async toggleActive(id: string) {
 		const staff = await this.accountRepo.findOne({
 			where: { id, role: AccountRole.STAFF },
 		});
@@ -125,6 +143,15 @@ export class StaffService {
 			throw new StaffNotFoundError();
 		}
 
-		await this.accountRepo.delete({ id: staff.id });
+		staff.isActive = !staff.isActive;
+		await this.accountRepo.save(staff);
+
+		return this.accountRepo.findOne({
+			where: { id: staff.id },
+			relations: {
+				staffRole: true,
+				createdBy: true,
+			},
+		});
 	}
 }

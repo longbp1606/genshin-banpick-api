@@ -1,4 +1,5 @@
 import { AccountRepository } from "@db/repositories";
+import { ApiError } from "@errors";
 import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { Request } from "express";
@@ -7,9 +8,14 @@ import { ClsService } from "nestjs-cls";
 import { GenshinBanpickCls } from "@utils";
 import { Env } from "@utils/env";
 import { REQUIRE_PERMISSION_KEY, SKIP_AUTH_KEY } from "@utils/decorators";
-import { InvalidCredentialsError } from "./errors";
+import {
+	AccountInactiveError,
+	InvalidCredentialsError,
+	PermissionDeniedError,
+	StaffRoleInactiveError,
+} from "./errors";
 import { AccountRole } from "@utils/enums";
-import { ProfileResponse } from "./dto";
+import { ProfileResponse } from "@modules/self/dto";
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -55,6 +61,10 @@ export class AuthGuard implements CanActivate {
 				throw new InvalidCredentialsError();
 			}
 
+			if (!account.isActive) {
+				throw new AccountInactiveError();
+			}
+
 			const requiredPermission = this.reflector.getAllAndOverride<string>(
 				REQUIRE_PERMISSION_KEY,
 				[context.getHandler()],
@@ -66,17 +76,24 @@ export class AuthGuard implements CanActivate {
 					return true;
 				}
 
+				if (!account.staffRole || !account.staffRole.isActive) {
+					throw new StaffRoleInactiveError();
+				}
+
 				const permissions =
-					account.staffRole?.permissions?.map((p) => p.permission?.code) ?? [];
+					account.staffRole.permissions?.map((p) => p.permission?.code) ?? [];
 				const hasPermission = permissions.includes(requiredPermission);
 				if (!hasPermission) {
-					throw new InvalidCredentialsError();
+					throw new PermissionDeniedError();
 				}
 			}
 
 			this.cls.set("profile", ProfileResponse.fromEntity(account));
 			return true;
-		} catch {
+		} catch (error) {
+			if (error instanceof ApiError) {
+				throw error;
+			}
 			throw new InvalidCredentialsError();
 		}
 	}

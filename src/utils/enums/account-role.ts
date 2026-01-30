@@ -1,5 +1,5 @@
 export enum AccountRole {
-	USER,
-	STAFF,
-	ADMIN,
+	USER = 0,
+	STAFF = 1,
+	ADMIN = 2,
 }

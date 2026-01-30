@@ -15,6 +15,10 @@ export const Env = {
 	JWT_AT_EXPIRATION: Number(process.env.JWT_AT_EXPIRATION || "0"),
 	ADMIN_EMAIL: process.env.ADMIN_EMAIL || "",
 	ADMIN_PASSWORD: process.env.ADMIN_PASSWORD || "",
+	CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME || "",
+	CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY || "",
+	CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET || "",
+	CLOUDINARY_FOLDER: process.env.CLOUDINARY_FOLDER || "",
 	HOYOLAB_BASE_URL:
 		process.env.HOYOLAB_BASE_URL || "https://sg-public-api.hoyolab.com/event",
 	HOYOLAB_LANGUAGE: process.env.HOYOLAB_LANGUAGE || "en-us",

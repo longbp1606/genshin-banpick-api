@@ -21,6 +21,9 @@ export class AccountEntity {
 	@Column({ name: ColumnNames.Account.email, unique: true })
 	email: string;
 
+	@Column({ name: ColumnNames.Account.avatar, nullable: true, type: "text" })
+	avatar: string;
+
 	@Column({ name: ColumnNames.Account.displayName })
 	displayName: string;
 
@@ -29,6 +32,16 @@ export class AccountEntity {
 
 	@CreateDateColumn({ name: ColumnNames.Global.createdAt })
 	createdAt: Date;
+
+	@Column({ name: ColumnNames.Global.createdById, nullable: true })
+	createdById: string;
+
+	@ManyToOne(() => AccountEntity, {
+		createForeignKeyConstraints: false,
+		nullable: true,
+	})
+	@JoinColumn({ name: ColumnNames.Global.createdById })
+	createdBy: AccountEntity;
 
 	@Column({ name: ColumnNames.Account.lastLoginAt, nullable: true })
 	lastLoginAt: Date;
@@ -49,4 +62,7 @@ export class AccountEntity {
 	})
 	@JoinColumn({ name: ColumnNames.StaffRole.id })
 	staffRole: StaffRoleEntity;
+
+	@Column({ name: ColumnNames.Account.isActive, default: true })
+	isActive: boolean;
 }

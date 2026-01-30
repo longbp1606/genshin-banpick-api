@@ -30,6 +30,14 @@ export class StaffRoleController {
 		return BaseApiResponse.success(StaffRoleResponse.fromEntities(roles));
 	}
 
+	@Get(":id")
+	@RequirePermission("admin.staff-role.detail")
+	@SwaggerBaseApiResponse(StaffRoleResponse)
+	async getStaffRole(@Param("id", ParseIntPipe) id: number) {
+		const role = await this.roleService.getStaffRole(id);
+		return BaseApiResponse.success(StaffRoleResponse.fromEntity(role));
+	}
+
 	@Post()
 	@RequirePermission("admin.staff-role.create")
 	@SwaggerBaseApiResponse(StaffRoleResponse)
@@ -49,11 +57,19 @@ export class StaffRoleController {
 		return BaseApiResponse.success(StaffRoleResponse.fromEntity(role));
 	}
 
-	@Post("/copy/:id")
+	@Post(":id/copy")
 	@RequirePermission("admin.staff-role.copy")
 	@SwaggerBaseApiResponse(StaffRoleResponse)
 	async copyRole(@Param("id", ParseIntPipe) id: number) {
 		const role = await this.roleService.copyRole(id);
+		return BaseApiResponse.success(StaffRoleResponse.fromEntity(role));
+	}
+
+	@Put(":id/toggle-active")
+	@RequirePermission("admin.staff-role.update")
+	@SwaggerBaseApiResponse(StaffRoleResponse)
+	async toggleRoleStatus(@Param("id", ParseIntPipe) id: number) {
+		const role = await this.roleService.toggleRoleActive(id);
 		return BaseApiResponse.success(StaffRoleResponse.fromEntity(role));
 	}
 }

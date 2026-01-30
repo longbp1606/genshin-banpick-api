@@ -6,6 +6,8 @@ import { APP_GUARD } from "@nestjs/core";
 import { AuthGuard, AuthModule } from "@modules/auth";
 import { ClsModule } from "nestjs-cls";
 import { StaffModule } from "@modules/admin/staff";
+import { FilesModule } from "@modules/files";
+import { SelfModule } from "@modules/self";
 import { HoyolabModule } from "@modules/hoyolab";
 
 @Module({
@@ -21,6 +23,8 @@ import { HoyolabModule } from "@modules/hoyolab";
 		StaffRoleModule,
 		AuthModule,
 		StaffModule,
+		FilesModule,
+		SelfModule,
 		HoyolabModule,
 	],
 	controllers: [],
