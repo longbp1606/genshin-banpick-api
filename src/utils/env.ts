@@ -15,6 +15,9 @@ export const Env = {
 	JWT_AT_EXPIRATION: Number(process.env.JWT_AT_EXPIRATION || "0"),
 	ADMIN_EMAIL: process.env.ADMIN_EMAIL || "",
 	ADMIN_PASSWORD: process.env.ADMIN_PASSWORD || "",
+	HOYOLAB_BASE_URL:
+		process.env.HOYOLAB_BASE_URL || "https://sg-public-api.hoyolab.com/event",
+	HOYOLAB_LANGUAGE: process.env.HOYOLAB_LANGUAGE || "en-us",
 } as const;
 
 console.log(Env);

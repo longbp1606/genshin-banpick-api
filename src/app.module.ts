@@ -6,6 +6,7 @@ import { APP_GUARD } from "@nestjs/core";
 import { AuthGuard, AuthModule } from "@modules/auth";
 import { ClsModule } from "nestjs-cls";
 import { StaffModule } from "@modules/admin/staff";
+import { HoyolabModule } from "@modules/hoyolab";
 
 @Module({
 	imports: [
@@ -20,6 +21,7 @@ import { StaffModule } from "@modules/admin/staff";
 		StaffRoleModule,
 		AuthModule,
 		StaffModule,
+		HoyolabModule,
 	],
 	controllers: [],
 	providers: [
